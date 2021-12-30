@@ -143,6 +143,7 @@ d3.csv("data.csv").then(function(healthData, err) {
     data.smokes = +data.smokes;
     data.smokesHigh= +data.smokesHigh;
     data.smokesLow = +data.smokesLow;
+    data.abbr = data.abbr;
   });
 
 
@@ -185,11 +186,9 @@ d3.csv("data.csv").then(function(healthData, err) {
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d.age))
-    // .attr("cy", d => yLinearScale(d.num_hits))
     .attr("r", 20)
     .attr("fill", "blue")
     .attr("opacity", ".5");
-   
 
 
 
