@@ -32,7 +32,7 @@ var chartGroup = svg.append("g")
 
 
 
-// Initial Params - default to poverty
+// Initial Params - default to obesity
 var chosenXAxis = "obesity";
 
 
@@ -55,7 +55,7 @@ function xScale(healthData, chosenXAxis) {
 
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// transitions from old axis to new axis and does so over 1 second
+// transitions from old axis to new axis and does so over 2 second
 // function used for updating yAxis var upon click on axis label
 
 function renderAxes(newXScale, xAxis) {
@@ -81,8 +81,16 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
+// function used for updating text abbreviations group with a transition to
+// new text
+function renderText(circlesLabel, newXScale, chosenXAxis) {
 
+  circlesLabel.transition()
+    .duration(2000)
+    .attr("x", d => newXScale(d[chosenXAxis]));
 
+  return circlesLabel;
+}
 
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, circlesGroup) {
@@ -153,7 +161,7 @@ d3.csv("data.csv").then(function(healthData, err) {
 
 
 
-//   // Create y scale function
+// Create y scale function
   var yLinearScale = d3.scaleLinear()
    .domain([d3.min(healthData, d => d.age) * .9,  //min val based on chosen axis
       d3.max(healthData, d => d.age) * 1.1          //max val based on chosen axis
@@ -180,15 +188,28 @@ d3.csv("data.csv").then(function(healthData, err) {
 
 
   // append initial circles
-  var circlesGroup = chartGroup.selectAll("circle")
+  var circlesGroup = chartGroup.selectAll("shirley")
     .data(healthData)
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d.age))
-    .attr("r", 20)
+    .attr("r", 16)
     .attr("fill", "blue")
     .attr("opacity", ".5");
+
+
+
+  var circlesLabel =  chartGroup.selectAll("shirley")
+    .data(healthData)
+    .enter()
+    .append("text")
+    .style("fill", "white")                          // fill the text with the colour black
+    .attr("x", d => xLinearScale(d[chosenXAxis]))    // set x position of left side of text
+    .attr("y", d => yLinearScale(d.age))             // set y position of bottom of text
+    .attr("dy", ".35em")                             // set offset y position
+    .attr("text-anchor", "middle")                   // set anchor y justification
+    .text(d => (d.abbr));  
 
 
 
@@ -202,7 +223,7 @@ d3.csv("data.csv").then(function(healthData, err) {
     .attr("y", 20)
     .attr("value", "obesity") // value to grab for event listener
     .classed("active", true)
-    .text("Obesity (kilo)");
+    .text("Obesity (20k - 38k)");
 
 
   var smokesLabel = labelsGroup.append("text")
@@ -234,15 +255,16 @@ d3.csv("data.csv").then(function(healthData, err) {
     .classed("axis-text", true)
     .text("(Range: 28 - 48 years)");
 
-
-    
-  // updateToolTip function for above csv import
+  // updateToolTip function for above
   var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+  var circlesLabel = updateToolTip(chosenXAxis, circlesLabel);
 
   // x axis labels event listener
   labelsGroup.selectAll("text")
     .on("click", function() {
 
+// Redraw all of this stuff when a different value is selected
+// *************************************************************************
 
       // get value of selection
       var value = d3.select(this).attr("value");
@@ -251,7 +273,6 @@ d3.csv("data.csv").then(function(healthData, err) {
         // replaces chosenXAxis with value
         chosenXAxis = value;
 
-        // functions here found above csv import
         // updates x scale for new data
         xLinearScale = xScale(healthData, chosenXAxis);
 
@@ -260,6 +281,9 @@ d3.csv("data.csv").then(function(healthData, err) {
 
         // updates circles with new x values
         circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+        // // updates text with state abbreviation with new x values, with transition
+        circlesLabel = renderText(circlesLabel, xLinearScale, chosenXAxis);
 
         // updates tooltips with new info
         circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
