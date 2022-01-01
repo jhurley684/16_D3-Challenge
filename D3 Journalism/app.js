@@ -1,7 +1,5 @@
 
 // SET UP SIZE, DIMENSION, & LOCATION OF CHART AREA
-// *****************************************************************************
-
 var svgWidth = 960;
 var svgHeight = 500;
 
@@ -27,17 +25,11 @@ var svg = d3
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-// **********************************************************************************
-// **********************************************************************************
-
-
 
 // Initial Params - default to obesity
 var chosenXAxis = "obesity";
 
 
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // function used for updating x -scale var upon click on axis label
 
 function xScale(healthData, chosenXAxis) {
@@ -53,8 +45,6 @@ function xScale(healthData, chosenXAxis) {
 }
 
 
-
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // transitions from old axis to new axis and does so over 2 second
 // function used for updating yAxis var upon click on axis label
 
@@ -69,7 +59,6 @@ function renderAxes(newXScale, xAxis) {
 }
 
 
-
 // function used for drawing/updating circles group with a transition to
 // new circles
 function renderCircles(circlesGroup, newXScale, chosenXAxis) {
@@ -81,6 +70,7 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
+
 // function used for updating text abbreviations group with a transition to
 // new text
 function renderText(circlesLabel, newXScale, chosenXAxis) {
@@ -91,6 +81,7 @@ function renderText(circlesLabel, newXScale, chosenXAxis) {
 
   return circlesLabel;
 }
+
 
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, circlesGroup) {
@@ -106,7 +97,6 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     label1 = "Smoke:"
     label2 = "Age";
   }
-
 
   // Make tooltip show up
   var toolTip = d3.tip()
@@ -186,7 +176,6 @@ d3.csv("data.csv").then(function(healthData, err) {
     .call(leftAxis);
 
 
-
   // append initial circles
   var circlesGroup = chartGroup.selectAll("shirley")
     .data(healthData)
@@ -214,7 +203,6 @@ d3.csv("data.csv").then(function(healthData, err) {
 
 
   // Create group for two x-axis labels
-  // ************************************************************************
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
@@ -232,9 +220,6 @@ d3.csv("data.csv").then(function(healthData, err) {
     .attr("value", "smokes") // value to grab for event listener
     .classed("inactive", true)
     .text("Smokes (per Week)");
-
-// ***************************************************************************
-
 
 
   // append y axis and labels
@@ -264,7 +249,6 @@ d3.csv("data.csv").then(function(healthData, err) {
     .on("click", function() {
 
 // Redraw all of this stuff when a different value is selected
-// *************************************************************************
 
       // get value of selection
       var value = d3.select(this).attr("value");
