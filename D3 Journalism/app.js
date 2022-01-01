@@ -308,5 +308,5 @@ d3.csv("data.csv").then(function(healthData, err) {
       }
     });
 }).catch(function(error) {
-  console.log(error);
+  console.log(error);git 
 });
